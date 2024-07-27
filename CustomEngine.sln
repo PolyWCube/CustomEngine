@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CustomApplication", "CustomApplication\CustomApplication.vcxproj", "{EFEBC8A2-6676-47FD-BD18-4A266C60FC9F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CustomEngine", "CustomEngine\CustomEngine.vcxproj", "{D5E08B8E-A340-48CC-9C04-8132ED7B4281}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5E08B8E-A340-48CC-9C04-8132ED7B4281}.Debug|x64.ActiveCfg = Debug|x64
+		{D5E08B8E-A340-48CC-9C04-8132ED7B4281}.Debug|x64.Build.0 = Debug|x64
+		{D5E08B8E-A340-48CC-9C04-8132ED7B4281}.Release|x64.ActiveCfg = Release|x64
+		{D5E08B8E-A340-48CC-9C04-8132ED7B4281}.Release|x64.Build.0 = Release|x64
+		{EFEBC8A2-6676-47FD-BD18-4A266C60FC9F}.Debug|x64.ActiveCfg = Debug|x64
+		{EFEBC8A2-6676-47FD-BD18-4A266C60FC9F}.Debug|x64.Build.0 = Debug|x64
+		{EFEBC8A2-6676-47FD-BD18-4A266C60FC9F}.Release|x64.ActiveCfg = Release|x64
+		{EFEBC8A2-6676-47FD-BD18-4A266C60FC9F}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A2A1098D-889D-4E4B-B34F-012C2F6DB611}
+	EndGlobalSection
+EndGlobal
