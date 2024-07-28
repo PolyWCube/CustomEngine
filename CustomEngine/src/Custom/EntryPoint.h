@@ -5,6 +5,8 @@
 extern Custom::Application* Custom::GenerateApplication();
 
 int main(int argc, char** argv) {
+	Custom::Log::Init();
+
 	auto app = Custom::GenerateApplication();
 	app->Run();
 	delete app;

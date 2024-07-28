@@ -1,4 +1,10 @@
+*.sln
+*.vcxproj
+*.vcxproj.filters
+.gitignore
+
 .vs/
 bin/
 bin-int/
+
 *.user

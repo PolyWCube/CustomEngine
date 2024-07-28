@@ -1,7 +1,6 @@
 #include "Application.h"
 
-namespace Custom
-{
+namespace Custom {
 	Application::Application() {
 
 	}
