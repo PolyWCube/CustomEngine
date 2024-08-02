@@ -1,14 +1,13 @@
-#pragma once
-
+#include <chrono>
 #include <string>
 #include <iostream>
-#include <chrono>
 
-#include "../Base.h"
+#include "Custom/Base.h"
+#include "LogCode.h"
 
 namespace Custom {
-	enum class LogMode { trace, info, success, debug, warn, error, fatal };
-	enum class LogColor { green, boldGreen, magenta, yellow, red, boldRed, blue, white };
+	enum LogMode { trace, info, success, debug, warn, error, fatal };
+	enum LogColor { green, boldGreen, magenta, yellow, red, boldRed, blue, white };
 
 	class Logger {
 	public:
@@ -17,10 +16,13 @@ namespace Custom {
 		template <typename... Args>
 		void Log(LogMode mode, LogColor color, const Args&... args) {
 			std::string message = ConnectArgs(args...);
-			std::string defaultColor = GetLogColor(LogColor::white);
 
-			std::string entry = GetTime() + " " + GetLogColor(m_logColor) + m_name + defaultColor + "| " + GetLogColor(color) + GetLogMode(mode) + defaultColor + "| " + defaultColor + message;
+			std::string entry = GetTime() + " " + GetLogColor(m_logColor) + m_name + RESET + "| " + GetLogColor(color) + GetLogMode(mode) + RESET + "| " + RESET + message;
 			std::cout << entry << std::endl;
+		}
+
+		void Log() {
+			std::cout << std::endl;
 		}
 
 	private:
@@ -31,8 +33,7 @@ namespace Custom {
 		std::string Stringify(const T& val) {
 			if constexpr (std::is_convertible_v<T, std::string>) return static_cast<std::string>(val);
 			else if constexpr (std::is_arithmetic_v<T>) return std::to_string(val);
-			//else if constexpr (std::is_base_of_v<event, T>) return val.ToString();
-			else "Unable to stringify message. At CustomEngine/src/Custom/Log/CustomLog.cpp";
+			else return val.ToString();
 		}
 		std::string Stringify(const std::string& val) { return val; }
 
@@ -48,15 +49,15 @@ namespace Custom {
 		}
 		std::string GetLogColor(LogColor color) {
 			switch (color) {
-			case LogColor::green:		return "\033[32m";
-			case LogColor::boldGreen:	return "\033[1;32m";
-			case LogColor::magenta:		return "\033[35m";
-			case LogColor::yellow:		return "\033[33m";
-			case LogColor::red:			return "\033[31m";
-			case LogColor::boldRed:		return "\033[1;31m";
-			case LogColor::blue:		return "\033[34m";
-			case LogColor::white:		return "\033[37m";
-			default:					return "\033[37m";
+			case LogColor::green:		return GREEN;
+			case LogColor::boldGreen:	return BOLDGREEN;
+			case LogColor::magenta:		return MAGENTA;
+			case LogColor::yellow:		return YELLOW;
+			case LogColor::red:			return RED;
+			case LogColor::boldRed:		return BOLDRED;
+			case LogColor::blue:		return BLUE;
+			case LogColor::white:		return WHITE;
+			default:					return BLACK;
 			}
 		}
 		std::string GetLogMode(LogMode mode) {

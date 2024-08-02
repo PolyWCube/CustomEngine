@@ -1,0 +1,9 @@
+[submodule "CustomEngine/vendor/GLFW"]
+	path = CustomEngine/vendor/GLFW
+	url = https://github.com/PolyWCube/GLFW
+[submodule "CustomEngine/vendor/--force"]
+	path = CustomEngine/vendor/--force
+	url = https://github.com/PolyWCube/GLFW
+[submodule "CustomEngine/vendor/CustomEngine/vendor/GLFW"]
+	path = CustomEngine/vendor/CustomEngine/vendor/GLFW
+	url = https://github.com/PolyWCube/GLFW

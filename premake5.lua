@@ -1,13 +1,15 @@
 workspace "CustomEngine"
 	architecture "x64"
-	configurations
-	{
+	configurations {
 		"Debug",
 		"Release"
 	}
 	startproject "Sandbox"
 
 	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
+include "CustomEngine/vendor/GLFW"
+include "CustomEngine/vendor/Glad"
 
 project "CustomEngine"
 	location "CustomEngine"
@@ -19,24 +21,36 @@ project "CustomEngine"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 	
-	pchheader "CustomPrecompiledHeader.h"
-	pchsource "CustomEngine/src/CustomPrecompiledHeader.cpp"
+	pchheader "CustomPrecompileHeader.h"
+	pchsource "CustomEngine/src/CustomPrecompileHeader.cpp"
 
-	files
-	{
+	files {
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
+	
+	includedirs {
+		"%{prj.name}/src",
+		"CustomEngine/vendor/GLFW/include",
+		"CustomEngine/vendor/Glad/include"
+	}
+	
+	links {
+		"CustomEngine/vendor/GLFW/lib/glfw3.lib",
+		"Glad",
+		"opengl32.lib"
+	}
+	
+	filter "files:CustomEngine/src/Custom/Log/CustomLog.cpp" flags { "NoPCH" }
 
 	filter "system:windows"
 		systemversion "latest"
 
-		defines
-		{
+		defines {
 			"CUSTOM_PLATFORM_WINDOWS",
 			"CUSTOM_ENABLE_DEBUG",
-			"GLFW_INCLUDE_NONE",
-			"_CRT_SECURE_NO_WARNINGS"
+			"_CRT_SECURE_NO_WARNINGS",
+			"CUSTOM_ENABLE_ASSERTION"
 		}
 
 	filter "configurations:Debug"
@@ -64,30 +78,26 @@ project "CustomApplication"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	files
-	{
+	files {
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
 
-	includedirs
-	{
-		"CustomEngine/src",
-		"CustomEngine/vendor"
+	includedirs {
+		"CustomEngine/src"
 	}
 
-	links 
-	{
+	links {
 		"CustomEngine"
 	}
 
 	filter "system:windows"
 		systemversion "latest"
 
-		defines
-		{
+		defines {
 			"CUSTOM_PLATFORM_WINDOWS",
-			"_CRT_SECURE_NO_WARNINGS"
+			"_CRT_SECURE_NO_WARNINGS",
+			"CUSTOM_ENABLE_ASSERTION"
 		}
 
 	filter "configurations:Debug"
