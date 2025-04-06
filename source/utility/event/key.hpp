@@ -1,7 +1,7 @@
 #ifndef CUSTOM_KEY_EVENT
 #define CUSTOM_KEY_EVENT
 
-#include "utility/event.hpp"
+#include "event.hpp"
 
 namespace Custom {
 	namespace Event {
@@ -17,7 +17,7 @@ namespace Custom {
 			super = 42
 		};
 
-		std::ostream& operator<<(std::ostream& os, KeyState keyState) {
+		static std::ostream& operator<<(std::ostream& os, KeyState keyState) {
 			switch (keyState) {
 				case KeyState::zero: os << "0"; break;
 				case KeyState::one: os << "1"; break;

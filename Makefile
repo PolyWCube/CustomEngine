@@ -21,10 +21,23 @@ endif
 APPLICATION_CPP = example/application.cpp
 APPLICATION_BUILD = $(OBJ_DIR)/application/application.o
 
-PCH_HPP = $(SRC_DIR)/precompiledheader.hpp
-PCH_CPP = $(SRC_DIR)/precompiledheader.cpp
+PCH_HPP = $(SRC_DIR)/precompiled_header.hpp
+PCH_CPP = $(SRC_DIR)/precompiled_header.cpp
 PCH_OBJ = $(OBJ_DIR)/pch.hpp.gch
-SRC_CPPS = $(shell find $(SRC_DIR) -name "*.cpp" -type f)
+#SRC_CPPS = $(shell find $(SRC_DIR) -name "*.cpp" -type f | tac)
+SRC_CPPS = \
+	source/utility/log/logger.cpp \
+	source/utility/log/log.cpp \
+	source/utility/layer/layer.cpp \
+	source/utility/layer/manager.cpp \
+	source/component/graphic/window/window.cpp \
+	source/component/graphic/window/manager.cpp \
+	source/component/graphic/window/win32_window.cpp \
+	source/utility/object/property.cpp \
+	source/utility/object/manager.cpp \
+	source/application.cpp \
+	source/entrypoint.cpp \
+	source/precompiled_header.cpp
 SRC_OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_CPPS))
 
 ifneq ($(filter all,$(MAKECMDGOALS)),)
@@ -53,7 +66,7 @@ $(BUILD_DIR):
 $(PCH_OBJ): $(PCH_CPP)
 	@mkdir -p $(dir $@)
 	@echo "Build [PRECOMPILED HEADER] $@..."
-	@$(CXX) $(CXXFLAGS) -x c++-header $(PCH_CPP) -o $@
+	@$(CXX) $(CXXFLAGS) $(MACROS) -x c++-header $(PCH_CPP) -o $@
 	@echo -e "$(GREEN)Build [PRECOMPILED HEADER] $@ successfully$(RESET)\n"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
@@ -61,7 +74,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 	@echo "Build $@..."
 	@$(CXX) $(CXXFLAGS) $(MACROS) -MMD -MP -include $(PCH_HPP) -c $< -o $@
 
-$(APPLICATION_BUILD): $(APPLICATION_CPP)
+$(APPLICATION_BUILD): $(APPLICATION_CPP) $(CUSTOM_LIB)
 	@mkdir -p $(dir $@)
 	@echo -e "Build [APPLICATION] $@..."
 	@$(CXX) $(CXXFLAGS) $(MACROS) -MMD -MP -include $(PCH_HPP) -c $(APPLICATION_CPP) -o $@
@@ -79,7 +92,7 @@ $(TARGET): $(PCH_OBJ) $(CUSTOM_LIB) $(APPLICATION_BUILD) | $(BUILD_DIR)
 	@read -p "Press Enter to close"
 
 clean:
-	rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR)
 
 -include $(shell find $(BUILD_DIR) -name "*.d" -type f)
 

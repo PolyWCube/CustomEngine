@@ -2,9 +2,10 @@
 #define CUSTOM_APPLICATION
 
 #include "base.hpp"
-#include "component/graphic/window.hpp"
-#include "utility/event.hpp"
+
 #include "utility/event/window.hpp"
+#include "utility/layer/manager.hpp"
+#include "utility/object/manager.hpp"
 
 namespace Custom {
 	class Application {
@@ -15,11 +16,16 @@ namespace Custom {
 		void Run();
 
 		void Event(Event::Event& event);
+
+		void AddLayer(Layer::Layer* layer);
+		void AddOverlay(Layer::Layer* overlay);
 	private :
 		bool WindowClose(Event::WindowClose& event);
 
 		bool run = true;
-		std::unique_ptr<Graphic::Window::Window> window;
+
+		Object::Manager objectManager;
+		Layer::Manager layerManager;
 	};
 
 	Application* createApplication();

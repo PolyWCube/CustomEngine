@@ -1,7 +1,7 @@
 #ifndef CUSTOM_EVENT
 #define CUSTOM_EVENT
 
-#include "precompiledheader.hpp"
+#include "precompiled_header.hpp"
 #include "base.hpp"
 
 namespace Custom {
@@ -21,7 +21,8 @@ namespace Custom {
 			window = BIT(1),
 			keyboard = BIT(2),
 			mouse = BIT(3),
-			mouseButton = BIT(4)
+			mouseButton = BIT(4),
+			ui = BIT(5)
 		};
 
 		enum class Action : uint16_t {
@@ -36,7 +37,8 @@ namespace Custom {
 			update = BIT(7),
 			render = BIT(8),
 			tick = BIT(9),
-			resize = BIT(10)
+			resize = BIT(10),
+			valueChange = BIT(11)
 		};
 
 		class Event {
@@ -54,7 +56,7 @@ namespace Custom {
 			friend std::ostream& operator<<(std::ostream& os, const Custom::Event::Event& event) {
 				return os << event.getStream();
 			}
-		protected :
+
 			bool handle = false;
 		};
 

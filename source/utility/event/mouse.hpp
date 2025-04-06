@@ -1,7 +1,7 @@
 #ifndef CUSTOM_MOUSE_EVENT
 #define CUSTOM_MOUSE_EVENT
 
-#include "utility/event.hpp"
+#include "event.hpp"
 #include "utility/math/vector.hpp"
 
 namespace Custom {
@@ -11,7 +11,7 @@ namespace Custom {
 			Right = 1,
 			Middle = 2
 		};
-		std::ostream& operator<<(std::ostream& os, MouseState mouseState) {
+		static std::ostream& operator<<(std::ostream& os, MouseState mouseState) {
 			switch (mouseState) {
 				case MouseState::Right: os << "Left"; break;
 				case MouseState::Left: os << "Right"; break;

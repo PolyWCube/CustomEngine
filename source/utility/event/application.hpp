@@ -1,7 +1,7 @@
 #ifndef CUSTOM_APPLICATION_EVENT
 #define CUSTOM_APPLICATION_EVENT
 
-#include "utility/event.hpp"
+#include "event.hpp"
 #include "utility/math/vector.hpp"
 
 namespace Custom {

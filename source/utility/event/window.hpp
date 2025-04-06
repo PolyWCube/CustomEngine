@@ -1,7 +1,7 @@
 #ifndef CUSTOM_WINDOW_EVENT
 #define CUSTOM_WINDOW_EVENT
 
-#include "utility/event.hpp"
+#include "event.hpp"
 #include "utility/math/vector.hpp"
 
 namespace Custom {

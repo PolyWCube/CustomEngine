@@ -1,10 +1,11 @@
-#include "precompiledheader.hpp"
-#include "windows.hpp"
-#include "component/log.hpp"
+#include "precompiled_header.hpp"
+
+#include "win32_window.hpp"
+
 #include "utility/event/window.hpp"
 #include "utility/event/key.hpp"
 #include "utility/event/mouse.hpp"
-#include "utility/event/map/windows.hpp"
+#include "utility/event/map/win32.hpp"
 #include "utility/math/vector.hpp"
 
 #ifndef UNICODE
@@ -14,12 +15,20 @@
 namespace Custom {
 	namespace Graphic {
 		namespace Window {
-			Window* Window::Create(const WindowProperty& windowProperty) {
-				return new Win32Window(windowProperty);
-			}
+			bool Win32Window::isRegisterWindowClass = false;
 
-			Win32Window::Win32Window(const WindowProperty& windowProperty) : title(StringToWstring(windowProperty.title)), size(windowProperty.size), hWindow(nullptr) {
-				Initial(windowProperty);
+			Win32Window::Win32Window(const Property& property) : Window(property), wTitle(Utility::StringToWstring(property.title)), hWindow(nullptr) {
+				if (!isRegisterWindowClass) {
+					if (!RegisterWindow(hInstance)) {
+						Log::Error("Initial Failed : Win32 Window registration unsuccessful.");
+						return;
+					}
+					else {
+						isRegisterWindowClass = true;
+						Log::Success("Register Window Class instance success...");
+					}
+				}
+				Initial(property);
 			}
 			Win32Window::~Win32Window() {
 				Close();
@@ -40,7 +49,7 @@ namespace Custom {
 						Math::Vector2<uint16_t> size(LOWORD(lParameter), HIWORD(lParameter));
 						Event::WindowResize event(size);
 
-						window->size = size;
+						window->property.size = size;
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
@@ -141,16 +150,12 @@ namespace Custom {
 				return DefWindowProcW(hWindow, message, wParameter, lParameter);
 			}
 
-			void Win32Window::Initial(const WindowProperty& windowProperty) {
-				Log::Info("Initial Win32 Window : ", windowProperty.title, ", ", windowProperty.size);
+			void Win32Window::Initial(const Property& property) {
+				Math::Vector2<uint16_t> size = property.size;
+				Log::Info("Initial Win32 Window : ", property.title, ", ", size);
 				hInstance = GetModuleHandle(NULL);
 
-				if (!RegisterWindow(hInstance)) {
-					Log::Error("Initial Failed : Win32 Window registration unsuccessful.");
-					return;
-				}
-
-				hWindow = CreateWindowExW(0, L"WindowClass", title.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, size.x, size.y, NULL, NULL, hInstance, this);
+				hWindow = CreateWindowExW(0, L"WindowClass", wTitle.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, size.x, size.y, NULL, NULL, hInstance, this);
 
 				if (hWindow == NULL) {
 					Log::Error("Initial Failed : Win32 Window creation unsuccessful.");
@@ -173,8 +178,14 @@ namespace Custom {
 					DispatchMessage(&message);
 				}
 			}
-			void Win32Window::Show() {
-				ShowWindow(hWindow, SW_SHOW);
+
+			void* Win32Window::getWindowHandle() {
+				return hWindow;
+			}
+
+			void Win32Window::SetVisible(bool visible) {
+				if (visible) ShowWindow(hWindow, SW_SHOW);
+				else ShowWindow(hWindow, SW_HIDE);
 				UpdateWindow(hWindow);
 			}
 
@@ -195,21 +206,6 @@ namespace Custom {
 				windowClass.hIconSm = NULL;
 
 				return RegisterClassExW(&windowClass);
-			}
-
-			std::wstring Win32Window::StringToWstring(const std::string& utf8) {
-				if (utf8.empty()) return std::wstring();
-
-				int size = MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), -1, nullptr, 0);
-				if (size == 0) return std::wstring();
-
-				std::wstring utf16(size - 1, L'\0');
-				MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), -1, &utf16[0], size);
-				for (wchar_t c : utf16) {
-					Log::Info("Character: ", static_cast<int>(c));
-				}
-
-				return utf16;
 			}
 		}
 	}

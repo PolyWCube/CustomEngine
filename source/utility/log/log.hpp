@@ -1,10 +1,8 @@
 #ifndef CUSTOM_LOG
 #define CUSTOM_LOG
 
-#include "../base.hpp"
-
-#include "log/logger.hpp"
-#include "log/formatter.hpp"
+#include "logger.hpp"
+#include "formatter.hpp"
 
 #define DEFINE_LOG_LEVEL(level, fg_color, bg_color) \
 namespace Custom { \
