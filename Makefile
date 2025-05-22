@@ -24,26 +24,10 @@ APPLICATION_BUILD = $(OBJ_DIR)/application/application.o
 PCH_HPP = $(SRC_DIR)/precompiled_header.hpp
 PCH_CPP = $(SRC_DIR)/precompiled_header.cpp
 PCH_OBJ = $(OBJ_DIR)/pch.hpp.gch
-#SRC_CPPS = $(shell find $(SRC_DIR) -name "*.cpp" -type f | tac)
-SRC_CPPS = \
-	source/utility/log/logger.cpp \
-	source/utility/log/log.cpp \
-	source/utility/layer/layer.cpp \
-	source/utility/layer/manager.cpp \
-	source/component/graphic/window/window.cpp \
-	source/component/graphic/window/manager.cpp \
-	source/component/graphic/window/win32_window.cpp \
-	source/utility/object/property.cpp \
-	source/utility/object/manager.cpp \
-	source/application.cpp \
-	source/entrypoint.cpp \
-	source/precompiled_header.cpp
+SRC_CPPS = $(shell find $(SRC_DIR) -name "*.cpp" -type f)
 SRC_OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_CPPS))
 
 ifneq ($(filter all,$(MAKECMDGOALS)),)
-$(info SRC_CPPS:)
-$(foreach file,$(SRC_CPPS),$(info $(file)))
-$(info )
 $(info SRC_OBJS:)
 $(foreach file,$(SRC_OBJS),$(info $(file)))
 $(info )
@@ -72,12 +56,12 @@ $(PCH_OBJ): $(PCH_CPP)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
 	@echo "Build $@..."
-	@$(CXX) $(CXXFLAGS) $(MACROS) -MMD -MP -include $(PCH_HPP) -c $< -o $@
+	@$(CXX) $(CXXFLAGS) $(MACROS) $(LIBS) -MMD -MP -include $(PCH_HPP) -c $< -o $@
 
 $(APPLICATION_BUILD): $(APPLICATION_CPP) $(CUSTOM_LIB)
 	@mkdir -p $(dir $@)
 	@echo -e "Build [APPLICATION] $@..."
-	@$(CXX) $(CXXFLAGS) $(MACROS) -MMD -MP -include $(PCH_HPP) -c $(APPLICATION_CPP) -o $@
+	@$(CXX) $(CXXFLAGS) $(MACROS) $(LIBS) -MMD -MP -include $(PCH_HPP) -c $(APPLICATION_CPP) -o $@
 	@echo -e "$(GREEN)Build [APPLICATION] $@ successfully$(RESET)\n"
 
 $(CUSTOM_LIB): $(SRC_OBJS) | $(LIB_DIR)
@@ -87,7 +71,7 @@ $(CUSTOM_LIB): $(SRC_OBJS) | $(LIB_DIR)
 
 $(TARGET): $(PCH_OBJ) $(CUSTOM_LIB) $(APPLICATION_BUILD) | $(BUILD_DIR)
 	@echo -e "\nLink $@..."
-	@$(CXX) $(CXXFLAGS) $(MACROS) $(APPLICATION_BUILD) -L$(LIB_DIR) -l$(LIB_NAME) -o $@ -mconsole
+	@$(CXX) $(CXXFLAGS) $(MACROS) $(APPLICATION_BUILD) -L$(LIB_DIR) -l$(LIB_NAME) -o $@ -mconsole $(LIBS)
 	@echo -e "$(GREEN)Link $@... successfully\n\nExecutable in $@$(RESET)\n"
 	@read -p "Press Enter to close"
 

@@ -1,11 +1,8 @@
-#include "property.hpp"
+#include "window.hpp"
 
 namespace Custom {
 	namespace Object {
-		Window::Window(const Graphic::Window::Property& property) {
-			window = std::move(Graphic::Window::Window::Create(property));
-		}
-		Window::Window() {}
+		Window::Window() : window(nullptr) {}
 
 		void Window::Create(const Graphic::Window::Property& property) {
 			window = std::move(Graphic::Window::Window::Create(property));
@@ -13,10 +10,12 @@ namespace Custom {
 
 		std::type_index Window::GetType() const { return typeid(Window); }
 		std::unique_ptr<Property> Window::Clone() const {
-			if (window){
+			Window* windowProperty = new Window();
+			if (window) {
 				Graphic::Window::Property property = window->GetProperty();
-				return std::unique_ptr<Property>(new Window(property));
-			} else return std::unique_ptr<Property>(new Window());
+				windowProperty->Create(property);
+			}
+			return std::unique_ptr<Property>(windowProperty);
 		}
 	}
 }

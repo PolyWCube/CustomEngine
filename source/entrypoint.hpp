@@ -5,10 +5,10 @@
 
 #ifdef CUSTOM_PLATFORM_WINDOWS
 
-extern Custom::Application* Custom::createApplication();
-//int argc, char** argv
-int main() {
-	auto app = Custom::createApplication();
+extern Custom::Application* Custom::CreateApplication();
+
+int main(int argc, char** argv) {
+	auto app = Custom::CreateApplication();
 	app->Run();
 	delete app;
 }

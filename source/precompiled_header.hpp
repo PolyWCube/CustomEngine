@@ -6,9 +6,11 @@
 #include <utility>
 #include <algorithm>
 #include <functional>
+#include <any>
 
 #include <unordered_map>
 #include <map>
+#include <set>
 
 #include <sstream>
 
@@ -20,6 +22,7 @@
 #include <type_traits>
 #include <format>
 #include <typeindex>
+#include <cstring>
 
 #include <string>
 #include <vector>

@@ -18,7 +18,7 @@ namespace Custom {
 		};
 
 		template <typename T>
-		inline std::string getStream(const T& val) {
+		inline std::string GetStream(const T& val) {
 			if constexpr (std::is_convertible_v<T, std::string>) return val;
 			else if constexpr (Streamable<T>) {
 				std::ostringstream oss;
@@ -28,14 +28,14 @@ namespace Custom {
 		}
 
 		template <typename... Args>
-		inline std::string getString(const Args&... args) {
+		inline std::string GetString(const Args&... args) {
 			std::ostringstream oss;
-			((oss << getStream(args)), ...);
+			((oss << GetStream(args)), ...);
 			return oss.str();
 		}
 
 		const std::string timestampFormat = TIMESTAMP_FORMAT;
-		inline std::string getTimestamp() {
+		inline std::string GetTimestamp() {
 			time_t now = time(0);
 			tm* timeinfo = localtime(&now);
 
@@ -46,7 +46,7 @@ namespace Custom {
 		}
 
 		const std::string fileNameFormat = FILE_NAME_FORMAT;
-		inline std::string getFileName() {
+		inline std::string GetFileName() {
 			time_t now = time(0);
 			tm* timeinfo = localtime(&now);
 

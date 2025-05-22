@@ -23,11 +23,11 @@ namespace Custom {
 
 		class MouseMove : public Event {
 		public :
-			MouseMove(Math::Vector2<float> position) : position(position) {}
+			MouseMove(const Math::Vector2<float>& position) : position(position) {}
 
-			inline float getPositionX() const { return position.x; }
-			inline float getPositionY() const { return position.y; }
-			inline Math::Vector2<float> getPosition() const { return position; }
+			inline float GetPositionX() const { return position.x; }
+			inline float GetPositionY() const { return position.y; }
+			inline Math::Vector2<float> GetPosition() const { return position; }
 
 			std::string getStream() const override {
 				std::ostringstream oss;
@@ -43,11 +43,11 @@ namespace Custom {
 
 		class MouseScroll : public Event {
 		public :
-			MouseScroll(Math::Vector2<float> offset) : offset(offset) {}
+			MouseScroll(const Math::Vector2<float>& offset) : offset(offset) {}
 
-			inline float getOffsetX() const { return offset.x; }
-			inline float getOffsetY() const { return offset.y; }
-			inline Math::Vector2<float> getOffset() const { return offset; }
+			inline float GetOffsetX() const { return offset.x; }
+			inline float GetOffsetY() const { return offset.y; }
+			inline Math::Vector2<float> GetOffset() const { return offset; }
 
 			std::string getStream() const override {
 				std::ostringstream oss;
@@ -65,20 +65,25 @@ namespace Custom {
 		public :
 			inline MouseState getMouseButton() { return mouseState; }
 
+			inline float GetPositionX() const { return position.x; }
+			inline float GetPositionY() const { return position.y; }
+			inline Math::Vector2<float> GetPosition() const { return position; }
+
 			DEFINE_EVENT_SOURCE(mouseButton)
 		protected :
-			MouseButton(MouseState mouseState) : mouseState(mouseState) {}
+			MouseButton(MouseState mouseState, Math::Vector2<float> position) : mouseState(mouseState), position(position) {}
 
 			MouseState mouseState;
+			Math::Vector2<float> position;
 		};
 
 		class MouseButtonPress : public MouseButton {
 		public :
-			MouseButtonPress(MouseState mouseState) : MouseButton(mouseState) {}
+			MouseButtonPress(MouseState mouseState, Math::Vector2<float> position) : MouseButton(mouseState, position) {}
 
 			std::string getStream() const override {
 				std::ostringstream oss;
-				oss << "Mouse Press: " << mouseState;
+				oss << "Mouse Press: " << mouseState << " in " << position;
 				return oss.str();
 			}
 
@@ -87,11 +92,11 @@ namespace Custom {
 
 		class MouseButtonRelease : public MouseButton {
 		public :
-			MouseButtonRelease(MouseState mouseState) : MouseButton(mouseState) {}
+			MouseButtonRelease(MouseState mouseState, Math::Vector2<float> position) : MouseButton(mouseState, position) {}
 
 			std::string getStream() const override {
 				std::ostringstream oss;
-				oss << "Mouse Release: " << mouseState;
+				oss << "Mouse Release: " << mouseState << " in " << position;
 				return oss.str();
 			}
 

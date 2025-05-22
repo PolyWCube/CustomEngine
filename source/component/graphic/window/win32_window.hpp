@@ -15,7 +15,12 @@ namespace Custom {
 				void Update() override;
 				void SetVisible(bool visible) override;
 
-				void* getWindowHandle() override;
+				void Minimize() override;
+				void Maximize() override;
+				void Restore() override;
+				bool IsMaximize() const override;
+
+				void* GetWindowHandle() override;
 
 				inline void SetEventCallback(const EventCallback& eventCallback) override { this->eventCallback = eventCallback; }
 

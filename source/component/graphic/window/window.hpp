@@ -20,7 +20,14 @@ namespace Custom {
 				virtual ~Window() {}
 
 				virtual void Update() = 0;
+
 				virtual void SetVisible(bool visible) = 0;
+				virtual bool IsVisible() const { return visible; }
+
+				virtual void Minimize() = 0;
+				virtual void Maximize() = 0;
+				virtual void Restore() = 0;
+				virtual bool IsMaximize() const = 0;
 
 				inline std::string GetTitle() const { return property.title; }
 				inline uint16_t GetWidth() const { return property.size.x; }
@@ -29,11 +36,13 @@ namespace Custom {
 				Property GetProperty() const { return property; }
 
 				virtual void SetEventCallback(const EventCallback& eventCallback) = 0;
-				virtual void* getWindowHandle() = 0;
+				virtual void* GetWindowHandle() = 0;
 
 				static std::unique_ptr<Window> Create(const Property& property = Property());
 			protected :
 				Property property;
+
+				bool visible = false;
 			};
 		}
 	}

@@ -25,6 +25,25 @@ namespace Custom {
 		private :
 			Math::Vector2<uint16_t> size;
 		};
+		class WindowMove : public Event {
+		public :
+			WindowMove(Math::Vector2<uint16_t> position) : position(position) {}
+
+			inline uint16_t getWidth() const { return position.x; }
+			inline uint16_t getHeight() const { return position.y; }
+			inline Math::Vector2<uint16_t> GetPosition() const { return position; }
+
+			std::string getStream() const override {
+				std::ostringstream oss;
+				oss << "Window Move: " << position;
+				return oss.str();
+			}
+
+			DEFINE_EVENT_SOURCE(window)
+			DEFINE_EVENT_ACTION(move)
+		private :
+			Math::Vector2<uint16_t> position;
+		};
 
 		class WindowClose : public Event {
 		public :

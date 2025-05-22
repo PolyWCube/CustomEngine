@@ -1,20 +1,23 @@
 #include "../include/custom.hpp"
 
-class AppLayer : public Custom::Layer::Layer {
+using namespace Custom;
+
+class AppLayer : public Layer::Layer {
 public :
 	AppLayer() : Layer("Application") {}
 	void Update() override {}
-	void Event(Custom::Event::Event& event) override {}
+	void Event(Event::Event& event) override {}
 };
 
-class App : public Custom::Application {
+class App : public Application {
 public :
 	App() {
-		AddLayer(new AppLayer());
+		AppLayer* appLayer = new AppLayer();
+		AddLayer(appLayer);
 	}
 	~App() {}
 };
 
-Custom::Application* Custom::createApplication() {
+Application* Custom::CreateApplication() {
 	return new App();
 }

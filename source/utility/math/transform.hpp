@@ -6,15 +6,11 @@
 
 namespace Custom {
 	namespace Math {
-		template <typename T, typename U, typename D>
+		template <typename P, typename S, typename R>
 		struct Transform {
-			Vector<T, U, D> position;
-			Vector<T, U, D> size;
-		};
-
-		template <typename T = float, typename U = float>
-		struct Transform2 : Transform<T, U, Vector2<T, U>> {
-			Vector2<T, U> pivot;
+			P position;
+			S size;
+			R rotation;
 		};
 	}
 }

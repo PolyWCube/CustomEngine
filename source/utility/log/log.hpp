@@ -10,11 +10,11 @@ namespace Custom { \
 		template <typename... Args> \
 		inline constexpr void level(const Args&... message) { \
 			std::stringstream os, ofs; \
-			std::string timestamp = getTimestamp(); \
-			os << fg_color << bg_color << timestamp << #level << ": " << Custom::Log::getString(message...) << RESET_COLOR; \
-			ofs << timestamp << #level << ": " << Custom::Log::getString(message...) << "\n"; \
+			std::string timestamp = GetTimestamp(); \
+			os << fg_color << bg_color << timestamp << #level << ": " << Custom::Log::GetString(message...) << RESET_COLOR; \
+			ofs << timestamp << #level << ": " << Custom::Log::GetString(message...) << "\n"; \
 			std::cout << os.str() << NEW_LINE; \
-			Logger::getInstance().WRITE(ofs.str()); \
+			Logger::GetInstance().Enqueue(ofs.str()); \
 		} \
 	} \
 }

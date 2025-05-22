@@ -2,11 +2,7 @@
 
 #include "win32_window.hpp"
 
-#include "utility/event/window.hpp"
-#include "utility/event/key.hpp"
-#include "utility/event/mouse.hpp"
 #include "utility/event/map/win32.hpp"
-#include "utility/math/vector.hpp"
 
 #ifndef UNICODE
 #define UNICODE
@@ -53,13 +49,29 @@ namespace Custom {
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
+
+						UpdateWindow(hWindow);
+						break;
+					}
+					case WM_MOVE : {
+						Math::Vector2<uint16_t> position(LOWORD(lParameter), HIWORD(lParameter));
+
+						Event::WindowMove event(position);
+
+						if (window->eventCallback) {
+							window->eventCallback(event);
+						}
+
+						UpdateWindow(hWindow);
 						break;
 					}
 
 					case WM_KEYDOWN : {
 						Event::KeyState keyState = Event::MapVirtualKeyToKeyState(wParameter);
 						UINT repeatCount = lParameter & 0xFFFF;
+
 						Event::KeyPress event(keyState, repeatCount);
+
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
@@ -67,7 +79,9 @@ namespace Custom {
 					}
 					case WM_KEYUP : {
 						Event::KeyState keyState = Event::MapVirtualKeyToKeyState(wParameter);
+
 						Event::KeyRelease event(keyState);
+
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
@@ -76,7 +90,10 @@ namespace Custom {
 
 					case WM_LBUTTONDOWN : {
 						Event::MouseState mouseState = Event::MouseState::Left;
-						Event::MouseButtonPress event(mouseState);
+						Math::Vector2<float> mousePosition(LOWORD(lParameter), HIWORD(lParameter));
+
+						Event::MouseButtonPress event(mouseState, mousePosition);
+
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
@@ -84,7 +101,10 @@ namespace Custom {
 					}
 					case WM_LBUTTONUP : {
 						Event::MouseState mouseState = Event::MouseState::Left;
-						Event::MouseButtonRelease event(mouseState);
+						Math::Vector2<float> mousePosition(LOWORD(lParameter), HIWORD(lParameter));
+
+						Event::MouseButtonRelease event(mouseState, mousePosition);
+
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
@@ -92,7 +112,10 @@ namespace Custom {
 					}
 					case WM_RBUTTONDOWN : {
 						Event::MouseState mouseState = Event::MouseState::Right;
-						Event::MouseButtonPress event(mouseState);
+						Math::Vector2<float> mousePosition(LOWORD(lParameter), HIWORD(lParameter));
+
+						Event::MouseButtonPress event(mouseState, mousePosition);
+
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
@@ -100,7 +123,10 @@ namespace Custom {
 					}
 					case WM_RBUTTONUP : {
 						Event::MouseState mouseState = Event::MouseState::Right;
-						Event::MouseButtonRelease event(mouseState);
+						Math::Vector2<float> mousePosition(LOWORD(lParameter), HIWORD(lParameter));
+
+						Event::MouseButtonRelease event(mouseState, mousePosition);
+
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
@@ -108,7 +134,9 @@ namespace Custom {
 					}
 					case WM_MOUSEMOVE : {
 						Math::Vector2<float> mousePosition(LOWORD(lParameter), HIWORD(lParameter));
+
 						Event::MouseMove event(mousePosition);
+
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
@@ -117,7 +145,9 @@ namespace Custom {
 					case WM_MOUSEWHEEL: {
 						int delta = GET_WHEEL_DELTA_WPARAM(wParameter);
 						float offsetValue = static_cast<float>(delta) / WHEEL_DELTA;
+
 						Event::MouseScroll event(Math::Vector2<float>(0.0f, offsetValue));
+
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
@@ -126,7 +156,9 @@ namespace Custom {
 					case WM_MOUSEHWHEEL: {
 						int delta = GET_WHEEL_DELTA_WPARAM(wParameter);
 						float offsetValue = static_cast<float>(delta) / WHEEL_DELTA;
+
 						Event::MouseScroll event(Math::Vector2<float>(offsetValue, 0.0f));
+
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
@@ -135,6 +167,7 @@ namespace Custom {
 
 					case WM_CLOSE : {
 						Event::WindowClose event;
+
 						if (window->eventCallback) {
 							window->eventCallback(event);
 						}
@@ -162,11 +195,10 @@ namespace Custom {
 					return;
 				}
 
-				//SetLayeredWindowAttributes(hWindow, 0, 128, LWA_ALPHA);
 				Log::Success("Initial Win32 Window successful.");
 			}
 			void Win32Window::Close() {
-				if (hWindow) DestroyWindow(hWindow);
+				DestroyWindow(hWindow);
 			}
 
 			void Win32Window::Update() {
@@ -179,14 +211,30 @@ namespace Custom {
 				}
 			}
 
-			void* Win32Window::getWindowHandle() {
+			void* Win32Window::GetWindowHandle() {
 				return hWindow;
 			}
 
 			void Win32Window::SetVisible(bool visible) {
+				this->visible = visible;
 				if (visible) ShowWindow(hWindow, SW_SHOW);
 				else ShowWindow(hWindow, SW_HIDE);
 				UpdateWindow(hWindow);
+			}
+			void Win32Window::Minimize() {
+				ShowWindow(hWindow, SW_MINIMIZE);
+				UpdateWindow(hWindow);
+			}
+			void Win32Window::Maximize() {
+				ShowWindow(hWindow, SW_MAXIMIZE);
+				UpdateWindow(hWindow);
+			}
+			void Win32Window::Restore() {
+				ShowWindow(hWindow, SW_RESTORE);
+				UpdateWindow(hWindow);
+			}
+			bool Win32Window::IsMaximize() const {
+				return IsZoomed(hWindow);
 			}
 
 			BOOL Win32Window::RegisterWindow(HINSTANCE hInstance) {

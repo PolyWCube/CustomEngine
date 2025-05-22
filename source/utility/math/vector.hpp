@@ -6,41 +6,49 @@
 
 namespace Custom {
 	namespace Math {
-		template <typename T, typename U, typename D>
+		template <typename T, typename U>
 		class Vector {
 		public :
-			D operator+(const D& vector) const { return static_cast<D const&>(*this).Add(vector); }
-			D& operator+=(const D& vector) { return static_cast<D&>(*this).AddAssign(vector); }
-			D operator-(const D& vector) const { return static_cast<D const&>(*this).Minus(vector); }
-			D& operator-=(const D& vector) { return static_cast<D&>(*this).MinusAssign(vector); }
-			D operator*(const T& scalar) const { return static_cast<D const&>(*this).Multiply(scalar); }
-			D& operator*=(const T& scalar) { return static_cast<D&>(*this).MultiplyAssign(scalar); }
-			D operator/(const T& scalar) const { return static_cast<D const&>(*this).Divide(scalar); }
-			D& operator/=(const T& scalar) { return static_cast<D&>(*this).DivideAssign(scalar); }
+			~Vector() = default;
 
-			U norm() const { return static_cast<D const&>(*this).CalculateNorm(); }
+			template <typename Self>
+			Self operator+(this Self& self, const Self& vector) { return self.Add(vector); }
+			template <typename Self>
+			Self& operator+=(this Self& self, const Self& vector) { return self.AddAssign(vector); }
+			template <typename Self>
+			Self operator-(this Self& self, const Self& vector) { return self.Minus(vector); }
+			template <typename Self>
+			Self& operator-=(this Self& self, const Self& vector) { return self.MinusAssign(vector); }
+			template <typename Self>
+			Self operator*(this Self& self, const T& scalar) { return self.Multiply(scalar); }
+			template <typename Self>
+			Self& operator*=(this Self& self, const T& scalar) { return self.MultiplyAssign(scalar); }
+			template <typename Self>
+			Self operator/(this Self& self, const T& scalar) { return self.Divide(scalar); }
+			template <typename Self>
+			Self& operator/=(this Self& self, const T& scalar) { return self.DivideAssign(scalar); }
+			template <typename Self>
+			bool operator==(this Self& self, const Self& vector) { return self.Equal(vector); }
+			template <typename Self>
+			bool operator!=(this Self& self, const Self& vector) { return self.Inequal(vector); }
 
-			virtual D Add(const D& vector) const = 0;
-			virtual D& AddAssign(const D& vector) = 0;
-			virtual D Minus(const D& vector) const = 0;
-			virtual D& MinusAssign(const D& vector) = 0;
-			virtual D Multiply(const T& scalar) const = 0;
-			virtual D& MultiplyAssign(const T& scalar) = 0;
-			virtual D Divide(const T& scalar) const = 0;
-			virtual D& DivideAssign(const T& scalar) = 0;
+			template <typename Self>
+			inline U Norm(this Self& self) { return self.Norm(); }
 
-			virtual U CalculateNorm() const = 0;
-
-			friend std::ostream& operator<<(std::ostream& os, const Vector<T, U, D>& vector) {
-				os << vector.toString();
-				return os;
-			}
-		protected :
-			virtual std::string toString() const = 0;
+			inline virtual std::string ToString() const = 0;
+		private :
+			template <typename V, typename W>
+			friend std::ostream& operator<<(std::ostream& os, const Vector<V, W>& vector);
 		};
 
+		template <typename T, typename U>
+		std::ostream& operator<<(std::ostream& os, const Vector<T, U>& vector) {
+			os << vector.ToString();
+			return os;
+		}
+
 		template <typename T = float, typename U = float>
-		class Vector2 : public Vector<T, U, Vector2<T, U>> {
+		class Vector2 : public Vector<T, U> {
 		public:
 			constexpr Vector2(T x, T y) : x(x), y(y) {}
 
@@ -51,45 +59,49 @@ namespace Custom {
 			static constexpr Vector2 left() { return Vector2(-1, 0); }
 			static constexpr Vector2 right() { return Vector2(1, 0); }
 
-			Vector2 Add(const Vector2& vector) const override { return Vector2(x + vector.x, y + vector.y); }
-			Vector2& AddAssign(const Vector2& vector) override {
+			template <typename V>
+			Vector2(const Vector2<V>& vector) : x(static_cast<T>(vector.x)), y(static_cast<T>(vector.y)) {}
+
+			T x, y;
+		private :
+			Vector2 Add(const Vector2& vector) const { return Vector2(x + vector.x, y + vector.y); }
+			Vector2& AddAssign(const Vector2& vector) {
 				x += vector.x;
 				y += vector.y;
 				return *this;
 			}
-			Vector2 Minus(const Vector2& vector) const override { return Vector2(x - vector.x, y - vector.y); }
-			Vector2& MinusAssign(const Vector2& vector) override {
+			Vector2 Minus(const Vector2& vector) const { return Vector2(x - vector.x, y - vector.y); }
+			Vector2& MinusAssign(const Vector2& vector) {
 				x -= vector.x;
 				y -= vector.y;
 				return *this;
 			}
-			Vector2 Multiply(const T& scalar) const override { return Vector2(x * scalar, y * scalar); }
-			Vector2& MultiplyAssign(const T& scalar) override {
+			Vector2 Multiply(const T& scalar) const { return Vector2(x * scalar, y * scalar); }
+			Vector2& MultiplyAssign(const T& scalar) {
 				x *= scalar;
 				y *= scalar;
 				return *this;
 			}
 			friend Vector2 operator*(const T& scalar, const Vector2& vector) { return vector * scalar; }
-			Vector2 Divide(const T& scalar) const override { return Vector2(x / scalar, y / scalar);}
-			Vector2& DivideAssign(const T& scalar) override {
+			Vector2 Divide(const T& scalar) const { return Vector2(x / scalar, y / scalar);}
+			Vector2& DivideAssign(const T& scalar) {
 				x /= scalar;
 				y /= scalar;
 				return *this;
 			}
+			bool Equal(const Vector2& vector) const { return (x == vector.x) && (y == vector.y); }
+			bool Inequal(const Vector2& vector) const { return (x != vector.x) || (y != vector.y); }
 
-			U CalculateNorm() const override { return squareRoot<U>(static_cast<U>(x * x + y * y)); }
+			U Norm() const { return squareRoot<U>(static_cast<U>(x * x + y * y)); }
 
-			template <typename V>
-			Vector2(const Vector2<V>& vector) : x(static_cast<T>(vector.x)), y(static_cast<T>(vector.y)) {}
-
-			inline std::string toString() const override {
+			inline std::string ToString() const override {
 				return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 			}
-			T x, y;
+			friend class Vector<T, U>;
 		};
 
 		template <typename T = float, typename U = float>
-		class Vector3 : Vector<T, U, Vector3<T, U>> {
+		class Vector3 : public Vector<T, U> {
 		public:
 			constexpr Vector3(T x, T y, T z) : x(x), y(y), z(z) {}
 
@@ -100,62 +112,66 @@ namespace Custom {
 			static constexpr Vector3 left() { return Vector3(-1, 0, 0); }
 			static constexpr Vector3 right() { return Vector3(1, 0, 0); }
 			static constexpr Vector3 forward() { return Vector3(0, 0, 1); }
-			static constexpr Vector3 backward() { return Vector3(0, 0, 1); }
+			static constexpr Vector3 backward() { return Vector3(0, 0, -1); }
 
-			Vector3 Add(const Vector3& vector) const override { return Vector3(x + vector.x, y + vector.y, z + vector.z); }
 			Vector3 operator+(const Vector2<T>& vector) const { return Vector3(x + vector.x, y + vector.y, z); }
-			Vector3& AddAssign(const Vector3& vector) override {
-				x += vector.x;
-				y += vector.y;
-				z += vector.z;
-				return *this;
-			}
 			Vector3& operator+=(const Vector2<T>& vector) {
 				x += vector.x;
 				y += vector.y;
 				return *this;
 			}
-			Vector3 Minus(const Vector3& vector) const override { return Vector3(x - vector.x, y - vector.y, z - vector.z); }
 			Vector3 operator-(const Vector2<T>& vector) const { return Vector3(x - vector.x, y - vector.y, z); }
-			Vector3& MinusAssign(const Vector3& vector) override {
-				x -= vector.x;
-				y -= vector.y;
-				z -= vector.z;
-				return *this;
-			}
 			Vector3& operator-=(const Vector2<T>& vector) {
 				x -= vector.x;
 				y -= vector.y;
 				return *this;
 			}
-
-			Vector3 Multiply(const T& scalar) const override { return Vector3(x * scalar, y * scalar, z * scalar); }
-			Vector3& MultiplyAssign(const T& scalar) override {
-				x *= scalar;
-				y *= scalar;
-				z *= scalar;
-				return *this;
-			}
 			friend Vector3 operator*(const T& scalar, const Vector3& vector) { return vector * scalar; }
-			Vector3 Divide(const T& scalar) const override { return Vector3(x / scalar, y / scalar, z / scalar);}
-			Vector3& DivideAssign(const T& scalar) override {
-				x /= scalar;
-				y /= scalar;
-				z /= scalar;
-				return *this;
-			}
-
-			U CalculateNorm() const { return squareRoot<U>(static_cast<U>(x * x + y * y + z * z)); }
 
 			template <typename V>
 			Vector3(const Vector3<V>& vector) : x(static_cast<T>(vector.x)), y(static_cast<T>(vector.y)), z(static_cast<T>(vector.z)) {}
 			template <typename V>
 			Vector3(const Vector2<V>& vector) : x(static_cast<T>(vector.x)), y(static_cast<T>(vector.y)), z(0) {}
 
-			inline std::string toString() override {
+			T x, y, z;
+		private :
+			Vector3 Add(const Vector3& vector) const { return Vector3(x + vector.x, y + vector.y, z + vector.z); }
+			Vector3& AddAssign(const Vector3& vector) {
+				x += vector.x;
+				y += vector.y;
+				z += vector.z;
+				return *this;
+			}
+			Vector3 Minus(const Vector3& vector) const { return Vector3(x - vector.x, y - vector.y, z - vector.z); }
+			Vector3& MinusAssign(const Vector3& vector) {
+				x -= vector.x;
+				y -= vector.y;
+				z -= vector.z;
+				return *this;
+			}
+			Vector3 Multiply(const T& scalar) const { return Vector3(x * scalar, y * scalar, z * scalar); }
+			Vector3& MultiplyAssign(const T& scalar) {
+				x *= scalar;
+				y *= scalar;
+				z *= scalar;
+				return *this;
+			}
+			Vector3 Divide(const T& scalar) const { return Vector3(x / scalar, y / scalar, z / scalar);}
+			Vector3& DivideAssign(const T& scalar) {
+				x /= scalar;
+				y /= scalar;
+				z /= scalar;
+				return *this;
+			}
+			bool Equal(const Vector3& vector) const { return (x == vector.x) && (y == vector.y) && (z == vector.z); }
+			bool Inequal(const Vector3& vector) const { return (x != vector.x) || (y != vector.y) || (z != vector.z); }
+
+			inline U Norm() const { return squareRoot<U>(static_cast<U>(x * x + y * y + z * z)); }
+
+			inline std::string ToString() const override {
 				return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
 			}
-			T x, y, z;
+			friend class Vector<T, U>;
 		};
 	}
 }

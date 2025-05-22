@@ -17,6 +17,11 @@ namespace Custom {
 				return std::sqrtf(number);
 			} else return std::sqrt(number);
 		}
+
+		template <typename T = float>
+		constexpr const T& Limit(const T& input, const T& min, const T& max) {
+			return std::clamp(input, min, max);
+		}
 	}
 }
 

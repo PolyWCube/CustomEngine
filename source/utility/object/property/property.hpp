@@ -3,6 +3,7 @@
 
 #include "precompiled_header.hpp"
 #include "component/graphic/window/window.hpp"
+#include "component/graphic/renderer/renderer.hpp"
 
 namespace Custom {
 	namespace Object {
@@ -24,26 +25,6 @@ namespace Custom {
 			std::unique_ptr<Property> Clone() const override { return std::make_unique<Transform>(*this); }
 			Math::Transform<T, N> transform;
 		};*/
-
-		class Window : public Property {
-		public :
-			Window();
-
-			void Create(const Graphic::Window::Property& property = Graphic::Window::Property());
-
-			std::type_index GetType() const override;
-			std::unique_ptr<Property> Clone() const override;
-
-			void SetVisible(bool visible) {
-				window->SetVisible(visible);
-			}
-			Graphic::Window::Window* GetWindow() {
-				return window.get();
-			}
-		private :
-			Window(const Graphic::Window::Property& property);
-			std::unique_ptr<Graphic::Window::Window> window;
-		};
 	}
 }
 
