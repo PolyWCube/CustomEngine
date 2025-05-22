@@ -1,5 +1,4 @@
 # Custom Engine
-![Totally official] (archive/image/official-logo.png)
 
 An application engine in C++ emphasizes (or at least tries) raw customizable and performance.
 
